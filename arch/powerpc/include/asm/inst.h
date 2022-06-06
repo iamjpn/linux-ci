@@ -136,7 +136,8 @@ static inline void ppc_inst_write(u32 *ptr, ppc_inst_t x)
 	if (!ppc_inst_prefixed(x))
 		*ptr = ppc_inst_val(x);
 	else
-		*(u64 *)ptr = ppc_inst_as_ulong(x);
+		asm volatile("std%U0%X0 %1,%0" : "=m<>"(*(u32 (*)[2]) ptr)
+					       : "r"(ppc_inst_as_ulong(x)));
 }
 
 #define PPC_INST_STR_LEN sizeof("00000000 00000000")
